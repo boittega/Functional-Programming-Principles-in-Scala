@@ -431,3 +431,95 @@ It is a class with value `null`.
 
 # Scala is a Pure Object Oriented language
 
+
+@@@ missing part
+
+# Variance
+how subtyping relates to genericity.
+
+Contravariant uses a minus and a variant uses a plus:
+```
+trait Function[-T, +U] {
+    def apply(x: T): U
+}
+```
+
+functions are actually contravariant in their argument types, and covariant in their result types.
+covariant type parameters only appear in method results.
+Contravariant type parameters can only appear in method parameters, 
+and nonvariant, or invariant, that they are used as aliases, type parameters can actually appear anywhere
+
+
+# Decomposition
+Let's say you have a hierarchy of classes and you want to build tree-like data structures from the instances of these classes.
+How do you build such a tree? And how do you find out what kind of elements are in the tree? And how do you access the data that's stored in this elements? That's the problem of decomposition
+Three attempts:
+- Classification, that created a quadratic explosion of methods to write
+- Type tests and type casts, unsafe at low level
+- OO decomposition, doesn't work for all methods
+
+# Pattern matching
+
+## Case classes
+A normal class but with `case` in front
+```
+trait Expr
+case class Number(n: Int) extends Expr
+case class Sum(e1: Expr, e2: Expr) extends Expr
+```
+Now when creating the eval method a case matching can be used to distinguish the class.
+```
+def eval(e: Expr): Int = e match {
+    case Number(n) => n
+    case Sum(e1, e2) => eval(e1) + eval(e2)
+}
+```
+
+# List
+List is imutable and array is mutable, and can change its content.
+List are recursive, while arrays are flat.
+
+Ways to construct a List.
+The commom way
+```
+val fruit = List("apples", "oranges", "pears")
+val nums = List(1, 2, 3, 4)
+val diag3 = List(List(1, 0, 0), List(0, 1, 0), List(0, 0, 1))
+val empty = List()
+```
+The List type way
+```
+val fruit: List[String] = List(ŏapplesŏ, ŏorangesŏ, ŏpearsŏ)
+val nums : List[Int] = List(1, 2, 3, 4)
+val diag3: List[List[Int]] = List(List(1, 0, 0), List(0, 1, 0), List(0, 0, 1))
+val empty: List[Nothing] = List()
+```
+And using `cons` that is the `::`
+```
+fruit = "apples" :: ("oranges" :: ("pears" :: Nil))
+nums = 1 :: (2 :: (3 :: (4 :: Nil)))
+empty = Nil
+```
+It can be simplified without the parenteses
+```
+nums = 1 :: 2 :: 3 :: 4 :: Nil
+```
+And as a method call
+```
+Nil.::(4).::(3).::(2).::(1)
+```
+
+## Sorting a list
+One way to sort a list using insertion sorting.
+```
+def isort(xs: List[Int]): List[Int] = xs match {
+    case List() => List()
+    case y :: ys => insert(y, isort(ys))
+}
+
+def insert(x: Int, xs: List[Int]): List[Int] = xs match {
+    case List() => List(x)
+    case y :: ys => if (x <= y) x :: xs else y :: insert(x, ys)
+}
+```
+
